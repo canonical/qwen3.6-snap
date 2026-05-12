@@ -1,0 +1,23 @@
+name: cpu
+description: Use CPU with a good balance between speed and accuracy (35B total / 3B activated)
+vendor: Canonical Ltd
+grade: stable
+devices:
+  anyof:
+    - type: cpu
+      architecture: amd64
+      flags: [sse4_2, f16c, fma, avx, avx2]
+    - type: cpu
+      architecture: arm64
+      features: [asimd]  # for ARMv8 ASIMD includes NEON instruction set
+memory: 32G
+disk-space: 25G
+components:
+  - &server llamacpp
+  - &model model-qwen36-35b-a3b-ud-q4-k-xl
+  - &mmproj mmproj-qwen36-35b-a3b-f16
+configurations:
+  server: *server
+  model: *model
+  multimodel-projector: *mmproj
+  http.base-path: v1

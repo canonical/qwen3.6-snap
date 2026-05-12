@@ -1,0 +1,17 @@
+NOTICE
+
+This snap includes software from the following projects:
+
+1. Qwen3.6-35B-A3B - Copyright (c) 2025, Qwen Team. Licensed under Apache-2.0.
+   Available at: https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF
+
+2. llama.cpp - Copyright (c) 2024-2025, The ggml authors. Licensed under MIT.
+   Available at: https://github.com/ggerganov/llama.cpp
+
+3. Go Chat Client - Copyright (c) 2024, Canonical Ltd. Licensed under MIT.
+   Available at: https://github.com/jpm-canonical/go-chat-client
+
+4. Inference Snaps CLI - Copyright (c) 2024-2025, Canonical Ltd. Licensed under Apache-2.0.
+   Available at: https://github.com/canonical/inference-snaps-cli
+
+5. Snap packaging code - Copyright (c) 2025, Canonical Ltd. Licensed under GPL-3.0.

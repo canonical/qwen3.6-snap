@@ -1,0 +1,12 @@
+[submodule "inference-snaps-cli"]
+	path = cli
+	url = https://github.com/canonical/inference-snaps-cli.git
+[submodule "inference-snaps-dev"]
+	path = dev
+	url = https://github.com/canonical/inference-snaps-dev.git
+[submodule "cli"]
+	path = cli
+	url = https://github.com/canonical/inference-snaps-cli.git
+[submodule "dev"]
+	path = dev
+	url = https://github.com/canonical/inference-snaps-dev.git

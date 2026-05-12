@@ -1,0 +1,13 @@
+# Snap artifacts
+partitions/
+parts/
+stage/
+prime/
+*.snap
+*.comp
+squashfs-root
+
+# Weights
+models/
+components/model*/*.gguf
+components/mmproj*/*.gguf

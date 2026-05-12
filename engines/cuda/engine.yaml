@@ -1,0 +1,24 @@
+name: cuda
+description: Use Nvidia GPUs via CUDA
+vendor: Canonical Ltd
+grade: stable
+devices:
+  allof:
+    - type: cpu
+      architecture: amd64
+      flags: [sse4_2, f16c, fma, avx, avx2]
+    - type: gpu
+      vendor-id: 0x10de # Nvidia Corporation
+      vram: 24G
+memory: 48G
+disk-space: 25G
+components:
+  - &server llamacpp-cuda
+  - &model model-qwen36-35b-a3b-ud-q4-k-xl
+  - &mmproj mmproj-qwen36-35b-a3b-f16
+configurations:
+  server: *server
+  model: *model
+  multimodel-projector: *mmproj
+  http.base-path: v1
+  gpu-layers: 99
