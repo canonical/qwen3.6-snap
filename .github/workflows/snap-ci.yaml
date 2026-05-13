@@ -47,9 +47,9 @@ jobs:
       matrix:
         runs:
           - architecture: amd64
-            runner: [ self-hosted, linux, amd64, xlarge, noble ]
+            runner: [ self-hosted, linux, amd64, 2xlarge-extra, noble ]
           - architecture: arm64
-            runner: [ self-hosted, linux, arm64, xlarge, noble ]
+            runner: [ self-hosted, linux, arm64, 2xlarge-extra, noble ]
     runs-on: ${{ matrix.runs.runner }}
 
     steps:
