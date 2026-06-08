@@ -6,7 +6,7 @@ description: |
   This snap installs an optimized environment for inference with the
   Qwen3.6-35B-A3B Vision Language Model.
 
-grade: devel
+grade: stable
 confinement: strict
 
 assumes:
@@ -38,10 +38,7 @@ plugs:
     interface: content
     content: npu-libs-2404
     target: $SNAP/npu-libs
-  # To allow sideloading models by root
-  home:
-    read: all
-    
+
 hooks:
   install:
     environment:
@@ -231,8 +228,6 @@ apps:
       - network
       # For hardware detection (via init)
       - hardware-observe
-      # For sideloading models
-      - home 
       # Intel NPU access (device node)
       - intel-npu 
       # Intel NPU access (libs) 
