@@ -1,7 +1,7 @@
-name: qwen36
+name: qwen3-6
 base: core24
 summary: Inference Snap for Qwen 3.6
-description: See snapcraft.io/qwen36
+description: See snapcraft.io/qwen3-6
 
 adopt-info: version
 
@@ -66,7 +66,7 @@ parts:
       # Do nothing. This significantly reduces build time when sourcing large files.
     override-build: |
       set -eo pipefail
-      cli_version=$($CRAFT_STAGE/bin/qwen36 version --format=json | jq .cli --raw-output)
+      cli_version=$($CRAFT_STAGE/bin/qwen3-6 version --format=json | jq .cli --raw-output)
       # Detect Go pseudo-versions (dev builds): vX.Y.Z-[0.]yyyymmddhhmmss-<12hexchars>[+dirty]
       # Shorten these to vX.Y.Z-<7char hash>, e.g. v1.0.1-b357c63
       if echo "$cli_version" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+-([0-9]+\.)?[0-9]{14}-[0-9a-f]{12}'; then
@@ -87,7 +87,7 @@ parts:
       mv cli bin/modelctl
 
       # For tab completion
-      ln --symbolic ./modelctl bin/qwen36
+      ln --symbolic ./modelctl bin/qwen3-6
 
       craftctl default
 
@@ -155,7 +155,7 @@ parts:
       "model-35b-a3b-ud-q4-k-m-gguf/Qwen3.6-35B-A3B-UD-Q4_K_M-00004-of-00006.gguf": (component/model-35b-a3b-ud-q4-k-m-4-of-6)
       "model-35b-a3b-ud-q4-k-m-gguf/Qwen3.6-35B-A3B-UD-Q4_K_M-00005-of-00006.gguf": (component/model-35b-a3b-ud-q4-k-m-5-of-6)
       "model-35b-a3b-ud-q4-k-m-gguf/Qwen3.6-35B-A3B-UD-Q4_K_M-00006-of-00006.gguf": (component/model-35b-a3b-ud-q4-k-m-6-of-6)
-
+      "mmproj-35b-a3b-f16-gguf/mmproj-F16.gguf": (component/mmproj-35b-a3b-f16-gguf)
     prime:
       # Exclude everything not explicitly organized
       - -*
@@ -207,7 +207,7 @@ parts:
       mkdir -p $license_dir
       cp NOTICE $license_dir/
       cp $SNAPCRAFT_PROJECT_DIR/LICENSE $license_dir/
-      cp $SNAPCRAFT_PROJECT_DIR/LICENSE-qwen36 $license_dir/
+      cp $SNAPCRAFT_PROJECT_DIR/LICENSE-qwen3-6 $license_dir/
 
 components:
   model-35b-a3b-ud-q4-k-m-1-of-6: &model-35b-a3b-ud-q4-k-m
@@ -230,6 +230,11 @@ components:
   model-35b-a3b-ud-q4-k-m-6-of-6:
     <<: *model-35b-a3b-ud-q4-k-m
 
+  mmproj-35b-a3b-f16-gguf:
+    type: standard
+    summary: Qwen3.6-35B-A3B F16 mmproj GGUF
+    description: Multimodal projector weights for Qwen3.6-35B-A3B vision support in GGUF format
+
   llamacpp:
     type: standard
     summary: llama.cpp using default CPU instruction sets
@@ -246,8 +251,8 @@ components:
     description: LLM inference in C/C++
 
 apps:
-  qwen36:
-    command: bin/qwen36
+  qwen3-6:
+    command: bin/qwen3-6
     completer: bin/completion.bash
     plugs:
       - hardware-observe

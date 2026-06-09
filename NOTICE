@@ -1,7 +1,7 @@
 Qwen3.6-35B-A3B is provided under and subject to the Apache License, Version 2.0.
 
-A copy of the Apache License, Version 2.0 is included herein and can be found in the LICENSE-qwen36 file.
+A copy of the Apache License, Version 2.0 is included herein and can be found in the LICENSE-qwen3-6 file.
 
 The snap packaging code is licensed separately under the terms specified in the LICENSE file.
 
-All artifacts and dependencies included within this snap package are subject to their respective licenses, which are documented and available at /snap/qwen36/current/usr/share/doc within the installed snap package.
+All artifacts and dependencies included within this snap package are subject to their respective licenses, which are documented and available at /snap/qwen3-6/current/usr/share/doc within the installed snap package.

@@ -25,17 +25,20 @@ jobs:
             provision-data: "distro: noble"
             select-engine: cpu-35b-a3b
             test-chat-tps: true
+            test-image-prompt: true
 
           - job-queue: anbox-nvidia-amd64
             provision-data: "distro: noble"
             install-nvidia-driver-version: 595
             select-engine: nvidia-gpu-35b-a3b
             test-chat-tps: true
+            test-image-prompt: true
 
           # - job-queue: anbox-amd-amd64
           #   provision-data: "distro: noble"
           #   select-engine: amd-gpu-35b-a3b
           #   test-chat-tps: true
+          #   test-image-prompt: true
 
     uses: canonical/inference-snaps-testing/.github/workflows/test-snap.yaml@v1
     secrets: inherit
@@ -43,7 +46,7 @@ jobs:
       job-queue: ${{ matrix.jobs.job-queue }}
       provision-data: ${{ matrix.jobs.provision-data }}
 
-      snap-name: qwen36
+      snap-name: qwen3-6
       snap-channel: ${{ inputs.snap-channel }}
 
       install-nvidia-driver-version: ${{ matrix.jobs.install-nvidia-driver-version }}

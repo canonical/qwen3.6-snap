@@ -1,9 +1,10 @@
 # Qwen 3.6 snap
-[![qwen36](https://snapcraft.io/qwen36/badge.svg)](https://snapcraft.io/qwen36)
+[![qwen3-6](https://snapcraft.io/qwen3-6/badge.svg)](https://snapcraft.io/qwen3-6)
 
 This snap installs a hardware-optimized engine for inference with
-Qwen3.6-35B-A3B, a Mixture-of-Experts (35B total / 3B active) instruction-tuned
-large language model, quantized to UD-Q4_K_M (GGUF).
+Qwen3.6-35B-A3B, a multimodal (text + vision) Mixture-of-Experts
+(35B total / 3B active) instruction-tuned large language model, quantized to
+UD-Q4_K_M (GGUF).
 
 ## Resources
 
@@ -20,10 +21,13 @@ Clone this repo with its submodules:
 git clone --recurse-submodules https://github.com/canonical/qwen3.6-snap
 ```
 
-Prepare the required model shards by running `download-models.sh` (set
-`SOURCE_GGUF` to the path of the full `Qwen3.6-35B-A3B-UD-Q4_K_M.gguf`):
+Prepare the required model shards and multimodal projector by running
+`download-models.sh` (set `SOURCE_GGUF` to the path of the full
+`Qwen3.6-35B-A3B-UD-Q4_K_M.gguf` and `MMPROJ_GGUF` to the path of the
+`mmproj-F16.gguf` vision projector):
 ```shell
-SOURCE_GGUF=/path/to/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf ./download-models.sh
+SOURCE_GGUF=/path/to/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf \
+  MMPROJ_GGUF=/path/to/mmproj-F16.gguf ./download-models.sh
 ```
 
 Build the snap and its components:
