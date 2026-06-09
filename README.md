@@ -21,12 +21,7 @@ Clone this repo with its submodules:
 git clone --recurse-submodules https://github.com/canonical/qwen3.6-snap
 ```
 
-Prepare the required model shards and multimodal projector by running
-`download-models.sh`. Everything is downloaded automatically from
-Hugging Face:
-```shell
-./download-models.sh
-```
+Prepare the required models by running `download-models.sh`.
 
 Build the snap and its components:
 ```shell
