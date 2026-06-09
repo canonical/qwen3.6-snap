@@ -22,11 +22,10 @@ git clone --recurse-submodules https://github.com/canonical/qwen3.6-snap
 ```
 
 Prepare the required model shards and multimodal projector by running
-`download-models.sh`. The model shards are downloaded automatically from
-Hugging Face. Provide the path to the `mmproj-F16.gguf` vision projector
-via the `MMPROJ_GGUF` environment variable:
+`download-models.sh`. Everything is downloaded automatically from
+Hugging Face:
 ```shell
-MMPROJ_GGUF=/path/to/mmproj-F16.gguf ./download-models.sh
+./download-models.sh
 ```
 
 Build the snap and its components:
