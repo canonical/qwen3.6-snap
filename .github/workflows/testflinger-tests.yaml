@@ -34,11 +34,11 @@ jobs:
             test-chat-tps: true
             test-image-prompt: true
 
-          # - job-queue: anbox-amd-amd64
-          #   provision-data: "distro: noble"
-          #   select-engine: amd-gpu-35b-a3b
-          #   test-chat-tps: true
-          #   test-image-prompt: true
+          - job-queue: anbox-amd-amd64
+            provision-data: "distro: noble"
+            select-engine: amd-gpu-35b-a3b
+            test-chat-tps: true
+            test-image-prompt: true
 
     uses: canonical/inference-snaps-testing/.github/workflows/test-snap.yaml@v1
     secrets: inherit
