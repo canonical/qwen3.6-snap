@@ -33,12 +33,14 @@ jobs:
             select-engine: nvidia-gpu
             test-chat-tps: true
             test-image-prompt: true
+            expected-tps: 30
 
           - job-queue: anbox-amd-amd64
             provision-data: "distro: noble"
             select-engine: amd-gpu
             test-chat-tps: true
             test-image-prompt: true
+            expected-tps: 10
 
     uses: canonical/inference-snaps-testing/.github/workflows/test-snap.yaml@v1
     secrets: inherit
