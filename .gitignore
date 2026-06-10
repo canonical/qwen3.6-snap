@@ -10,3 +10,6 @@ stage/
 
 # Dev tools
 dev/
+
+# Python virtual environment
+.venv/
