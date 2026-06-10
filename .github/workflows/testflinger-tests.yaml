@@ -23,20 +23,20 @@ jobs:
         jobs:
           - job-queue: maas-systemtests-amd64
             provision-data: "distro: noble"
-            select-engine: cpu-35b-a3b
+            select-engine: cpu
             test-chat-tps: true
             test-image-prompt: true
 
           - job-queue: anbox-nvidia-amd64
             provision-data: "distro: noble"
             install-nvidia-driver-version: 595
-            select-engine: nvidia-gpu-35b-a3b
+            select-engine: nvidia-gpu
             test-chat-tps: true
             test-image-prompt: true
 
           - job-queue: anbox-amd-amd64
             provision-data: "distro: noble"
-            select-engine: amd-gpu-35b-a3b
+            select-engine: amd-gpu
             test-chat-tps: true
             test-image-prompt: true
 
