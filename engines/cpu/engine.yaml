@@ -1,5 +1,5 @@
 name: cpu
-description: CPU-optimized for workstations
+summary: CPU-optimized for workstations
 vendor: Canonical Ltd
 
 devices:

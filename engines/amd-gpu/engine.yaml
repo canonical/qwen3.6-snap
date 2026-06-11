@@ -1,5 +1,5 @@
 name: amd-gpu
-description: ROCm-optimized for workstation GPUs
+summary: ROCm-optimized for workstation GPUs
 vendor: Canonical Ltd
 
 devices:

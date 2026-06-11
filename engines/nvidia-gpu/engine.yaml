@@ -1,5 +1,5 @@
 name: nvidia-gpu
-description: CUDA optimized for workstation GPUs
+summary: CUDA optimized for workstation GPUs
 vendor: Canonical Ltd
 
 devices:
