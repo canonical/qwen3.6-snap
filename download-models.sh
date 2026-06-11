@@ -11,7 +11,7 @@ source .venv/bin/activate
 pip install --upgrade pip
 pip install -U huggingface_hub
 
-hf download mrmara/Qwen3.6-35B-A3B-UD-Q4_K_M-5GB \
+hf download inference-snaps/Qwen3.6-35B-A3B-UD-Q4_K_M-5GB \
     --local-dir components/model-35b-a3b-ud-q4-k-m-gguf
 ls components/model-35b-a3b-ud-q4-k-m-gguf
 
