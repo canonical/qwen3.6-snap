@@ -21,7 +21,7 @@ devices:
     #   vendor-id: 0x1002
     #   microarchitecture: gfx1152
 
-runtime: llama-cpp-rocm
+runtime: llamacpp-rocm
 
 model:
   default: 35b-a3b-ud-q4-k-m-gguf

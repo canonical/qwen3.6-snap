@@ -9,7 +9,7 @@ devices:
     - type: cpu
       architecture: arm64
 
-runtime: llama-cpp-cpu
+runtime: llamacpp
 
 model:
   default: 35b-a3b-ud-q4-k-m-gguf
