@@ -1,0 +1,29 @@
+name: amd-gpu
+summary: ROCm-optimized for workstation GPUs
+vendor: Canonical Ltd
+
+devices:
+  allof:
+    - type: cpu
+      architecture: amd64
+  anyof:
+    - type: gpu
+      vendor-id: 0x1002
+      microarchitecture: gfx1031
+    - type: gpu
+      vendor-id: 0x1002
+      microarchitecture: gfx1032
+    # The following microarchitecture is not compatible with this model
+    # - type: gpu
+    #   vendor-id: 0x1002
+    #   microarchitecture: gfx1152
+
+runtime: llamacpp-rocm
+
+model:
+  default: 35b-a3b-ud-q4-k-m-gguf
+  options:
+    - 35b-a3b-ud-q4-k-m-gguf
+
+configurations:
+  sleep-idle-seconds: 600

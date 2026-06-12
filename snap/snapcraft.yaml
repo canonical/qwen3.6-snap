@@ -1,60 +1,113 @@
-name: qwen36
+name: qwen3-6
 base: core24
-version: &snap-version "3.6" # Qwen3.6
-summary: Qwen3.6-35B-A3B Vision Language Model
-description: |
-  This snap installs an optimized environment for inference with the
-  Qwen3.6-35B-A3B Vision Language Model.
+summary: Inference Snap for Qwen 3.6
+description: See snapcraft.io/qwen3-6
+
+adopt-info: version
 
 grade: stable
 confinement: strict
+compression: lzo
 
 assumes:
   - snapd2.68 # for components support
 
-compression: lzo
+platforms:
+  amd64:
+  arm64:
 
-environment:
-  # Workaround until it gets set by snapd
-  SNAP_COMPONENTS: /snap/$SNAP_INSTANCE_NAME/components/$SNAP_REVISION
-
-layout:
-  # Wget's default config file
-  # This is to avoid runtime errors and AppArmor denials
-  /etc/wgetrc:
-    bind-file: $SNAP/etc/wgetrc
-  # OpenCL looks in /etc/OpenCL/vendors for .icd files containing the paths to shared objects
-  /etc/OpenCL/vendors:
-    bind: $SNAP/etc/OpenCL/vendors
-  # Intel icd files use an absolute path to Intel OpenCL shared objects. Use a layout to mount the so files at the expected location
-  /usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/intel-opencl:
-    bind: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/intel-opencl
+slots:
+  status:
+    interface: content
+    source:
+      read:
+        - &status-share $SNAP_DATA/share/status
+  open-webui:
+    interface: content
+    content: open-webui-config
+    source:
+      read:
+        - &owui-share $SNAP_DATA/share/open-webui
 
 plugs:
-  intel-npu:
-    interface: custom-device
-    custom-device: intel-npu-device
-  npu-libs:
-    interface: content
-    content: npu-libs-2404
-    target: $SNAP/npu-libs
+  # To allow side-loading models into server (root daemon) from user home directory
+  home:
+    read: all
+
+environment:
+  SNAP_COMPONENTS: /snap/$SNAP_INSTANCE_NAME/components/$SNAP_REVISION
+  ARCH_TRIPLET: $CRAFT_ARCH_TRIPLET_BUILD_FOR
+  STATUS_SHARE: *status-share # Status directory shared via content interface
+  OWUI_SHARE: *owui-share # Open WebUI config directory shared via content interface
+
+layout:
+  # Under wsl the libraries are expected in /usr/lib/wsl
+  /usr/lib/wsl:
+    bind: $SNAP_COMMON/usr/lib/wsl
 
 hooks:
   install:
-    environment:
-      # To load libigdrcl.so, for Intel GPU vRAM
-      OCL_ICD_VENDORS: $SNAP/etc/OpenCL/vendors
-    plugs:
+    plugs: &install-plugs
       # For hardware detection
       - hardware-observe
       - opengl
+  post-refresh:
+    plugs: *install-plugs
 
 parts:
-  app-scripts:
-    source: apps
+  version:
+    after: [cli]
+    plugin: nil
+    source: . # To regenerate the git hash on every change
+    build-packages:
+      - jq
+      - git
+    override-pull: |
+      # Do nothing. This significantly reduces build time when sourcing large files.
+    override-build: |
+      set -eo pipefail
+      cli_version=$($CRAFT_STAGE/bin/qwen3-6 version --format=json | jq .cli --raw-output)
+      git_hash=$(git -C "$SNAPCRAFT_PROJECT_DIR" describe --always)
+      craftctl set version="${cli_version#v}+${git_hash}"
+
+  cli:
+    source:
+      - on amd64: https://github.com/canonical/inference-snaps-cli/releases/download/v2.0.0-beta.1/inference-snaps-cli-linux-amd64.tar.xz
+      - on arm64: https://github.com/canonical/inference-snaps-cli/releases/download/v2.0.0-beta.1/inference-snaps-cli-linux-arm64.tar.xz
     plugin: dump
+    override-build: |
+      mkdir -p bin
+      mv cli bin/modelctl
+
+      # For tab completion
+      ln --symbolic ./modelctl bin/qwen3-6
+
+      craftctl default
+
+  cli-lspci:
+    plugin: nil
+    stage-packages:
+      - pciutils # lspci
+
+  # Used for NVIDIA vRAM and CUDA Capability detection.
+  # Only the binary is included to avoid staging libraries, which should instead be provided by the host through the opengl interface.
+  cli-nvidia-smi:
+    plugin: nil
+    build-packages:
+      - nvidia-utils-580
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/bin
+      cp /usr/bin/nvidia-smi $CRAFT_PART_INSTALL/usr/bin/
+
+      license_dir=$CRAFT_PART_INSTALL/usr/share/doc/nvidia-utils-580/
+      mkdir -p $license_dir
+      cp /usr/share/doc/nvidia-utils-580/copyright $license_dir/
+
+  webui:
+    plugin: dump
+    source: https://github.com/canonical/inference-snaps-webui/releases/download/v1.0.0/inference-snaps-webui.tar.xz
     organize:
-      "*": bin/
+      "*": webui/
 
   engines:
     source: engines
@@ -62,90 +115,84 @@ parts:
     organize:
       "*": engines/
 
-  cli:
-    source: cli # this is a private git submodule which must be cloned separately
-    plugin: go
-    build-snaps:
-      - go/1.24/stable
-    stage-packages:
-      - pciutils
-      - nvidia-utils-580 # for Nvidia vRAM and Cuda Capability detection
-      - clinfo # for Intel GPU vRAM detection
+  models:
+    source: models
+    plugin: dump
     organize:
-      bin/cli: bin/qwen36
-    prime:
-      # Exclude nvidia icd to avoid clinfo from looking up properties for nvidia GPUs.
-      # See: https://github.com/canonical/inference-snaps/issues/148
-      - -etc/OpenCL/vendors/nvidia.icd
+      "*": models/
 
-  go-chat-client:
-    source: https://github.com/jpm-canonical/go-chat-client.git
-    source-type: git
-    source-tag: v1.0.0-beta.1
-    plugin: go
-    build-snaps:
-      - go/1.24/stable
+  runtimes:
+    source: runtimes
+    plugin: dump
+    organize:
+      "*": runtimes/
 
-  common-runtime-dependencies:
-    plugin: nil
+  scripts:
+    source: scripts
+    plugin: dump
     stage-packages:
-      - wget # model init
-      - jq # install hook
-    stage-snaps:
-      - yq # install hook
+      - jq
+    organize:
+      "server.sh": bin/
+      "server-webui.sh": bin/
+      "export-shared-configs.sh": bin/
+      "completion.bash": bin/
 
-  llamacpp: &llamacpp-part
-    source: https://github.com/ggerganov/llama.cpp.git
-    source-tag: &llamacpp-tag b8157
-    source-depth: 1
-    plugin: cmake
-    cmake-parameters:
-      - -DGGML_NATIVE=OFF
+  local-component-files:
+    plugin: cmake # We use an out-of-source plugin like cmake instead of "dump" to prevent unwanted copies, see https://github.com/canonical/craft-parts/issues/1609
+    source: components
+    override-build:
+      cp -rf --archive --link --no-dereference ${CRAFT_PART_SRC}/* ${CRAFT_PART_INSTALL}
+    organize:
+      "model-35b-a3b-ud-q4-k-m-gguf/Qwen3.6-35B-A3B-UD-Q4_K_M-00001-of-00006.gguf": (component/model-35b-a3b-ud-q4-k-m-1-of-6)
+      "model-35b-a3b-ud-q4-k-m-gguf/Qwen3.6-35B-A3B-UD-Q4_K_M-00002-of-00006.gguf": (component/model-35b-a3b-ud-q4-k-m-2-of-6)
+      "model-35b-a3b-ud-q4-k-m-gguf/Qwen3.6-35B-A3B-UD-Q4_K_M-00003-of-00006.gguf": (component/model-35b-a3b-ud-q4-k-m-3-of-6)
+      "model-35b-a3b-ud-q4-k-m-gguf/Qwen3.6-35B-A3B-UD-Q4_K_M-00004-of-00006.gguf": (component/model-35b-a3b-ud-q4-k-m-4-of-6)
+      "model-35b-a3b-ud-q4-k-m-gguf/Qwen3.6-35B-A3B-UD-Q4_K_M-00005-of-00006.gguf": (component/model-35b-a3b-ud-q4-k-m-5-of-6)
+      "model-35b-a3b-ud-q4-k-m-gguf/Qwen3.6-35B-A3B-UD-Q4_K_M-00006-of-00006.gguf": (component/model-35b-a3b-ud-q4-k-m-6-of-6)
+      "mmproj-35b-a3b-f16-gguf/mmproj-F16.gguf": (component/mmproj-35b-a3b-f16-gguf)
+    prime:
+      # Exclude everything not explicitly organized
+      - -*
+
+  llamacpp:
+    plugin: dump
+    source:
+      - on amd64: https://github.com/canonical/llama.cpp-builds/releases/download/b9482/llamacpp-amd64.tar.gz
+      - on arm64: https://github.com/canonical/llama.cpp-builds/releases/download/b9482/llamacpp-arm64.tar.gz
     stage-packages:
       - libgomp1
     organize:
-      # move everything, including the staged packages
+      "licenses": usr/share/doc/llama.cpp # Add licenses to the snap
       "*": (component/llamacpp)
 
   llamacpp-cuda:
-    <<: *llamacpp-part
-    build-packages:
-      - to amd64: # see also the overrides
-        - nvidia-cuda-toolkit
+    plugin: dump
+    source:
+      - on amd64: https://github.com/canonical/llama.cpp-builds/releases/download/b9482/llamacpp-amd64+cuda12.9.tar.gz
+      - on arm64: https://github.com/canonical/llama.cpp-builds/releases/download/b9482/llamacpp-arm64+cuda12.9.tar.gz
     stage-packages:
       - libgomp1
-      # This needs to match the CUDA version in the build environment
-      - libcudart12
-      - libcublas12
-    cmake-parameters:
-      - -DGGML_NATIVE=OFF
-      - -DGGML_CUDA=ON
-      - -DCMAKE_CUDA_ARCHITECTURES=all-major
+    organize:
+      "licenses": usr/share/doc/llama.cpp+cuda # Add licenses to the snap
+      "*": (component/llamacpp-cuda)
+
+  llamacpp-rocm:
+    plugin: dump
+    source: https://github.com/canonical/llama.cpp-builds/releases/download/b9482/llamacpp-amd64+rocm.tar.gz
+    stage-packages:
+      - libgomp1
+      - libatomic1
+    organize:
+      "licenses": usr/share/doc/llama.cpp+rocm # Add licenses to the snap
+      "*": (component/llamacpp-rocm)
+    # This part is only for amd64
     override-pull: &amd64-only |
-      if [ "$CRAFT_ARCH_BUILD_FOR" == "amd64" ]; then
-        craftctl default
-      fi
+      [ "$CRAFT_ARCH_BUILD_FOR" == "amd64" ] && craftctl default || exit 0
     override-build: *amd64-only
     override-stage: *amd64-only
     override-prime: *amd64-only
-    organize:
-      "*": (component/llamacpp-cuda)
 
-  model-qwen36-35b-a3b-ud-q4-k-xl:
-    source: components/model-qwen36-35b-a3b-ud-q4-k-xl
-    plugin: dump
-    organize:
-      "*": (component/model-qwen36-35b-a3b-ud-q4-k-xl)
-
-  mmproj-qwen36-35b-a3b-f16:
-    source: components/mmproj-qwen36-35b-a3b-f16
-    plugin: dump
-    organize:
-      "*": (component/mmproj-qwen36-35b-a3b-f16)
-
-  # Licenses
-  # The licenses of staged packages are automatically included in the snap at $SNAP/usr/share/doc/
-  # Additional licenses:
   notice:
     plugin: nil
     source: NOTICE
@@ -154,85 +201,74 @@ parts:
       license_dir=$CRAFT_PART_INSTALL/usr/share/doc
       mkdir -p $license_dir
       cp NOTICE $license_dir/
-      # Add license files referenced in NOTICE
       cp $SNAPCRAFT_PROJECT_DIR/LICENSE $license_dir/
-  llamacpp-license:
-    plugin: nil
-    source: https://github.com/ggerganov/llama.cpp.git
-    source-tag: *llamacpp-tag
-    source-depth: 1
-    override-build: |
-      license_dir=$CRAFT_PART_INSTALL/usr/share/doc/llama.cpp
-      mkdir -p $license_dir
-      cp $CRAFT_PART_SRC/LICENSE $license_dir
-      cp -r $CRAFT_PART_SRC/licenses/* $license_dir
+      cp $SNAPCRAFT_PROJECT_DIR/LICENSE-qwen3-6 $license_dir/
 
 components:
-  #
-  # Engines
-  #
+  model-35b-a3b-ud-q4-k-m-1-of-6: &model-35b-a3b-ud-q4-k-m
+    type: standard
+    summary: Qwen3.6-35B-A3B UD-Q4_K_M GGUF
+    description: Model weights for Qwen3.6-35B-A3B in GGUF format
+
+  model-35b-a3b-ud-q4-k-m-2-of-6:
+    <<: *model-35b-a3b-ud-q4-k-m
+
+  model-35b-a3b-ud-q4-k-m-3-of-6:
+    <<: *model-35b-a3b-ud-q4-k-m
+
+  model-35b-a3b-ud-q4-k-m-4-of-6:
+    <<: *model-35b-a3b-ud-q4-k-m
+
+  model-35b-a3b-ud-q4-k-m-5-of-6:
+    <<: *model-35b-a3b-ud-q4-k-m
+
+  model-35b-a3b-ud-q4-k-m-6-of-6:
+    <<: *model-35b-a3b-ud-q4-k-m
+
+  mmproj-35b-a3b-f16-gguf:
+    type: standard
+    summary: Qwen3.6-35B-A3B F16 mmproj GGUF
+    description: Multimodal projector weights for Qwen3.6-35B-A3B vision support in GGUF format
 
   llamacpp:
     type: standard
-    summary: llama.cpp Engine using default CPU instruction sets
+    summary: llama.cpp using default CPU instruction sets
     description: LLM inference in C/C++
-    version: *llamacpp-tag
 
   llamacpp-cuda:
     type: standard
-    summary: llama.cpp Engine for NVIDIA GPUs using CUDA
+    summary: llama.cpp with CUDA backend
     description: LLM inference in C/C++
-    version: *llamacpp-tag
 
-  # 
-  # Models
-  #
-
-  model-qwen36-35b-a3b-ud-q4-k-xl:
+  llamacpp-rocm:
     type: standard
-    summary: Qwen3.6-35B-A3B UD-Q4_K_XL
-    description: Quantized model with 35B parameters (3B active) in gguf format with UD-Q4_K_XL weight encoding (~22GB)
-    version: *snap-version
-
-  mmproj-qwen36-35b-a3b-f16:
-    type: standard
-    summary: MMProj for Qwen3.6-35B-A3B F16
-    description: Multimodal projector for Qwen3.6-35B-A3B in F16 format
-    version: *snap-version
+    summary: llama.cpp with ROCm backend
+    description: LLM inference in C/C++
 
 apps:
-  qwen36:
-    command: bin/qwen36
+  qwen3-6:
+    command: bin/qwen3-6
     completer: bin/completion.bash
     plugs:
-      # For hardware detection
-      - opengl
       - hardware-observe
-      # To access server over network socket
+      - opengl
       - network
+      - desktop # To open the webui in the browser
     environment:
-      # To load libigdrcl.so, for Intel GPU vRAM
-      OCL_ICD_VENDORS: $SNAP/etc/OpenCL/vendors
-      CHAT: $SNAP/bin/chat.sh
+      ADDITIONAL_FEATURES: chat, webui
 
   server:
     command: bin/server.sh
     daemon: simple
     plugs:
-      # For inference and hardware detection (via init)
-      - opengl
-      # Needed by for cuda-uvmfd to listen on a unix socket?
-      # Needed for server app by inheritance
       - network-bind
-      # Needed to download resources
-      - network
-      # For hardware detection (via init)
       - hardware-observe
-      # Intel NPU access (device node)
-      - intel-npu 
-      # Intel NPU access (libs) 
-      - npu-libs  
-    environment:
-      # Needed for shared libraries used by llama.cpp
-      # TODO: Should this instead be added in an env file to llamacpp component
-      ARCH_TRIPLET: $CRAFT_ARCH_TRIPLET_BUILD_FOR
+      - opengl
+      - process-control
+      - home
+
+  server-webui:
+    command: bin/server-webui.sh
+    daemon: simple
+    plugs:
+      - network-bind

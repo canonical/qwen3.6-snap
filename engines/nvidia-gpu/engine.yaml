@@ -1,15 +1,18 @@
-name: cpu
-summary: CPU-optimized for workstations
+name: nvidia-gpu
+summary: CUDA optimized for workstation GPUs
 vendor: Canonical Ltd
 
 devices:
+  allof:
+    - type: gpu
+      vendor-id: 0x10de # Nvidia Corporation
   anyof:
     - type: cpu
       architecture: amd64
     - type: cpu
       architecture: arm64
 
-runtime: llamacpp
+runtime: llamacpp-cuda
 
 model:
   default: 35b-a3b-ud-q4-k-m-gguf

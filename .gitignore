@@ -1,13 +1,15 @@
-# Snap artifacts
-partitions/
-parts/
-stage/
-prime/
+# Snap build artefacts
 *.snap
 *.comp
-squashfs-root
+parts/
+prime/
+stage/
 
-# Weights
-models/
-components/model*/*.gguf
-components/mmproj*/*.gguf
+# Model weight files
+*.gguf
+
+# Dev tools
+dev/
+
+# Python virtual environment
+.venv/
