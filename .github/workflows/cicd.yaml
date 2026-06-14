@@ -29,4 +29,4 @@ jobs:
       snap-name: qwen3-6
       smoke-test-engine: cpu
     secrets:
-      store-credentials: ${{ secrets.STORE_LOGIN_MAIN_TEMP }}
+      store-credentials: ${{ secrets.STORE_LOGIN_MAIN }}
