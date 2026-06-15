@@ -20,7 +20,7 @@ description: |
 
   **Licensing:**
 
-  The Qwen3.6 model is provided by Alibaba under the Apache 2.0 license.
+  The Qwen 3.6 model is provided by Alibaba under the Apache 2.0 license.
 
   The licenses of all bundled software can be found inside the snap at
   `/snap/qwen3-6/current/usr/share/doc`.
