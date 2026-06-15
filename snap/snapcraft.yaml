@@ -3,7 +3,7 @@ base: core24
 title: Qwen 3.6
 summary: Inference Snap for Qwen 3.6
 description: |
-  This is an inference snap that lets you run Qwen3.6-35B-A3B, a
+  This is an inference snap that lets you run Qwen 3.6-35B-A3B, a
   multimodal (text + vision) Mixture-of-Experts instruction-tuned large
   language model from Alibaba, quantized to UD-Q4_K_M (GGUF).
 
