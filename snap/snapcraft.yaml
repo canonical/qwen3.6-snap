@@ -3,9 +3,8 @@ base: core24
 title: Qwen 3.6
 summary: Inference Snap for Qwen 3.6
 description: |
-  This is an inference snap that lets you run Qwen 3.6-35B-A3B, a
-  multimodal (text + vision) Mixture-of-Experts instruction-tuned large
-  language model from Alibaba, quantized to UD-Q4_K_M (GGUF).
+  This is an inference snap that lets you run Qwen 3.6, a multimodal
+  (text + vision) instruction-tuned language model from Alibaba.
 
   Before you start, make sure to have the necessary drivers installed on the host:
   https://documentation.ubuntu.com/inference-snaps/how-to/install-drivers/
