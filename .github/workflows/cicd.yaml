@@ -1,0 +1,36 @@
+name: CICD
+
+on:
+  push:
+    branches:
+      - main
+  
+  workflow_dispatch: # manual trigger 
+
+
+# Keep one CICD run active at a time so publish/test/promote happen in order
+concurrency:
+  group: ${{ github.workflow }}
+  queue: max
+
+jobs:
+  cicd:
+    if: github.repository == 'canonical/qwen3.6-snap' # do not run on forks
+    uses: canonical/inference-snaps-dev/.github/workflows/reuse-cicd.yaml@v2
+    with:
+      build-runner: |
+        [
+          ["amd64", "large", "noble", "self-hosted"],
+          ["arm64", "large", "noble", "self-hosted"]
+        ]
+      build-init-script: 'download-models.sh'
+      store-track: latest
+      snap-name: qwen3-6
+      smoke-test-runner: |
+        [
+          ["amd64", "large", "self-hosted"],
+          ["arm64", "large", "self-hosted"]
+        ]
+      smoke-test-engine: cpu
+    secrets:
+      store-credentials: ${{ secrets.STORE_LOGIN_MAIN }}
