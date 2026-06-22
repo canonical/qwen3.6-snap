@@ -1,10 +1,7 @@
 id: 35b-a3b-ud-q4-k-m-gguf
 name: 35b-a3b
 
-description: |
- Qwen3.6 35B A3B is a multimodal (text + vision) Mixture-of-Experts
- instruction-tuned model with 3B active nodes, enabling efficient
- inference while maintaining high-quality reasoning and vision capabilities.
+description: Qwen3.6-35B-A3B, a multimodal (text + vision) Mixture-of-Experts instruction-tuned model
 model-card-url: https://huggingface.co/mrmara/Qwen3.6-35B-A3B-UD-Q4_K_M-5GB
 quantization: Q4_K_M
 
@@ -13,8 +10,6 @@ disk-size: 21967M
 capabilities:
   - text
   - vision
-  - thinking
-  - tools
 
 components:
   - model-35b-a3b-ud-q4-k-m-1-of-6
