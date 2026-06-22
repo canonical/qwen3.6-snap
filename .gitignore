@@ -4,6 +4,7 @@
 parts/
 prime/
 stage/
+components/
 
 # Model weight files
 *.gguf
