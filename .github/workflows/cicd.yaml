@@ -29,5 +29,10 @@ jobs:
       store-track: latest
       snap-name: qwen3-6
       smoke-test-engine: cpu
+      smoke-test-runner: |
+        [
+          ["amd64", "large", "self-hosted"],
+          ["arm64", "large", "self-hosted"]
+        ]
     secrets:
       store-credentials: ${{ secrets.STORE_LOGIN_MAIN }}
