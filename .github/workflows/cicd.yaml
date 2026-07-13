@@ -1,3 +1,4 @@
+# This workflow is used to build and publish the snap to the store on every push to main.
 name: CICD
 
 on:
@@ -23,14 +24,15 @@ jobs:
           ["amd64", "large", "noble", "self-hosted"],
           ["arm64", "large", "noble", "self-hosted"]
         ]
+      
       build-init-script: 'download-models.sh'
       store-track: latest
       snap-name: qwen3-6
+      smoke-test-engine: cpu
       smoke-test-runner: |
         [
           ["amd64", "large", "self-hosted"],
           ["arm64", "large", "self-hosted"]
         ]
-      smoke-test-engine: cpu
     secrets:
       store-credentials: ${{ secrets.STORE_LOGIN_MAIN }}
