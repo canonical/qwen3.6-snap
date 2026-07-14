@@ -1,3 +1,4 @@
+name: llamacpp-cuda
 servers:
   openai:
     protocol: http

@@ -1,3 +1,4 @@
+name: llamacpp
 servers:
   openai:
     protocol: http
