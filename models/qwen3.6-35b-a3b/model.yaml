@@ -5,7 +5,7 @@ description: |
  instruction-tuned model with 3B active nodes, enabling efficient
  inference while maintaining high-quality reasoning and vision capabilities.
 model-card-url: https://huggingface.co/mrmara/Qwen3.6-35B-A3B-UD-Q4_K_M-5GB
-quantization: ud-q4-k-m
+quantization: Q4_K_M
 
 disk-size: 21967M
 
