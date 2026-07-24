@@ -19,6 +19,7 @@ UD-Q4_K_M (GGUF).
 Clone the repo:
 ```shell
 git clone https://github.com/canonical/qwen3.6-snap
+cd qwen3.6-snap
 ```
 
 Initialize the development environment:
