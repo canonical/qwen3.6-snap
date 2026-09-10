@@ -31,7 +31,6 @@ environment:
   # The model file path is set to the first shard's symlink:
   - SHARDS_DIR=/tmp/qwen3-6-35b-a3b-ud-q4-k-m-shards
   - MODEL_FILE=$SHARDS_DIR/Qwen3.6-35B-A3B-UD-Q4_K_M-00001-of-00006.gguf
-  - MODEL_NAME=qwen3-6-35b-a3b-ud-q4-k-m
   - MMPROJ_FILE=$SNAP_COMPONENTS/mmproj-35b-a3b-f16-gguf/mmproj-F16.gguf
 
 layout:
