@@ -1,10 +1,9 @@
-# Qwen 3.6 snap
+# Qwen 3.6 inference snap
 [![qwen3-6](https://snapcraft.io/qwen3-6/badge.svg)](https://snapcraft.io/qwen3-6)
 
-This snap installs a hardware-optimized engine for inference with
-Qwen3.6-35B-A3B, a multimodal (text + vision) Mixture-of-Experts
-(35B total / 3B active) instruction-tuned large language model, quantized to
-UD-Q4_K_M (GGUF).
+Qwen 3.6 is a multimodal (text + vision) Mixture-of-Experts (35B total / 3B active) instruction-tuned large language model from Alibaba.
+
+Use this snap to quickly install an optimized environment for local inference with Qwen 3.6.
 
 The snap includes the following hardware-optimized inference engines:
 
