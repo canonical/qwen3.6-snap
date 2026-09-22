@@ -1,30 +1,40 @@
 name: qwen3-6
 base: core24
 title: Qwen 3.6
-summary: Qwen 3.6 inference snap
+summary: Local AI with Qwen 3.6 inference snap
 description: |
   Qwen 3.6 is a multimodal (text + vision) instruction-tuned language model from Alibaba.
 
-  Use this snap to run Qwen 3.6, optimized for your silicon.
+  Use this snap to quickly install an optimized environment for local inference with Qwen 3.6.
 
-  Before you start, ensure the necessary drivers are installed on the host:
-  https://documentation.ubuntu.com/inference-snaps/how-to/install-drivers/
+  The snap includes the following hardware-optimized inference engines:
+
+  * cpu: Optimized for x64 and ARM (armv8, armv9) CPUs
+  * amd-gpu: ROCm-enabled GPU acceleration
+  * nvidia-gpu: CUDA-enabled GPU acceleration
+
+  The most suitable engine is automatically selected based on the available hardware.
 
   **Install:**
 
   `sudo snap install qwen3-6`
 
-  **Get help:**
+  **Run:**
 
-  `qwen3-6 --help`
+  `qwen3-6`
 
-  **Licensing:**
+  Some accelerators require extra drivers to be usable with this snap:
+  https://documentation.ubuntu.com/inference-snaps/how-to/setup/drivers/
 
-  The Qwen 3.6 model is provided by Alibaba under the Apache 2.0 license.
+  **License:**
 
-  The licenses of all bundled software can be found inside the snap at
+  The Qwen 3.6 model is provided by Alibaba under the Apache License, Version 2.0:
+  https://www.apache.org/licenses/LICENSE-2.0
+
+  The licenses of all the bundled software can be found after installing the snap at
   `/snap/qwen3-6/current/usr/share/doc`.
 
+icon: snap/gui/icon-256.png
 website: https://documentation.ubuntu.com/inference-snaps
 source-code: https://github.com/canonical/qwen3.6-snap
 issues: https://github.com/canonical/inference-snaps/issues
@@ -286,3 +296,9 @@ apps:
     daemon: simple
     plugs:
       - network-bind
+
+lint:
+  ignore:
+    - metadata:
+      - license
+      - contact

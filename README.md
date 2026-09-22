@@ -6,6 +6,27 @@ Qwen3.6-35B-A3B, a multimodal (text + vision) Mixture-of-Experts
 (35B total / 3B active) instruction-tuned large language model, quantized to
 UD-Q4_K_M (GGUF).
 
+The snap includes the following hardware-optimized inference engines:
+
+* cpu: Optimized for x64 and ARM (armv8, armv9) CPUs
+* amd-gpu: ROCm-enabled GPU acceleration
+* nvidia-gpu: CUDA-enabled GPU acceleration
+
+The most suitable engine is automatically selected based on the available hardware.
+
+#### Install
+```shell
+sudo snap install qwen3-6
+```
+
+#### Run
+```shell
+qwen3-6
+```
+
+> [!TIP]
+> Some accelerators require extra [drivers](https://documentation.ubuntu.com/inference-snaps/how-to/setup/drivers/) to be usable with this snap.
+
 ## Resources
 
 📚 **[Documentation](https://documentation.ubuntu.com/inference-snaps/)**, learn how to use inference snaps
