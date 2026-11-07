@@ -186,8 +186,12 @@ parts:
       - on arm64: https://github.com/canonical/llama.cpp-builds/releases/download/b9482/llamacpp-arm64.tar.gz
     stage-packages:
       - libgomp1
+    override-build: |
+      # Move license files to be included in the snap, not the component
+      mkdir -p $CRAFT_PRIME/usr/share/doc/
+      mv licenses $CRAFT_PRIME/usr/share/doc/llama.cpp
+      craftctl default
     organize:
-      "licenses": usr/share/doc/llama.cpp # Add licenses to the snap
       "*": (component/llamacpp)
 
   llamacpp-cuda:
@@ -197,8 +201,12 @@ parts:
       - on arm64: https://github.com/canonical/llama.cpp-builds/releases/download/b9482/llamacpp-arm64+cuda12.9.tar.gz
     stage-packages:
       - libgomp1
+    override-build: |
+      # Move license files to be included in the snap, not the component
+      mkdir -p $CRAFT_PRIME/usr/share/doc/
+      mv licenses $CRAFT_PRIME/usr/share/doc/llama.cpp+cuda
+      craftctl default
     organize:
-      "licenses": usr/share/doc/llama.cpp+cuda # Add licenses to the snap
       "*": (component/llamacpp-cuda)
 
   llamacpp-rocm:
@@ -208,12 +216,17 @@ parts:
       - libgomp1
       - libatomic1
     organize:
-      "licenses": usr/share/doc/llama.cpp+rocm # Add licenses to the snap
       "*": (component/llamacpp-rocm)
     # This part is only for amd64
     override-pull: &amd64-only |
       [ "$CRAFT_ARCH_BUILD_FOR" == "amd64" ] && craftctl default || exit 0
-    override-build: *amd64-only
+    override-build: |
+      if [ "$CRAFT_ARCH_BUILD_FOR" == "amd64" ]; then
+        # Move license files to be included in the snap, not the component
+        mkdir -p $CRAFT_PRIME/usr/share/doc/
+        mv licenses $CRAFT_PRIME/usr/share/doc/llama.cpp+rocm
+        craftctl default
+      fi
     override-stage: *amd64-only
     override-prime: *amd64-only
 
