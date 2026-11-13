@@ -7,7 +7,7 @@ on:
 
 jobs:
   ai-test:
-    runs-on: [self-hosted, large, noble, amd64]
+    runs-on: [amd64, large, noble, self-hosted]
     steps:
       # Workshop (used by the agentic test) needs an LXD ZFS storage pool
       - name: Load ZFS kernel module
