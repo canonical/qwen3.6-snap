@@ -51,7 +51,8 @@ jobs:
                     "provision-data": "distro: noble",
                     "select-engine": "amd-gpu",
                     "test-chat-tps": true,
-                    "test-image-prompt": true
+                    "test-image-prompt": true,
+                    "expected-tps": 10
           }
         ]
       snap-name: qwen3-6
